@@ -155,7 +155,29 @@ def test_reasoning_audit_good_hierarchy():
     
     print("✓ Test 2.3 PASSED: Good hierarchy produces no fallacies")
 
+def test_evidence_lineage_collapses_equivalent_doi():
+    """Equivalent DOI representations should resolve to one evidence lineage."""
+    from engine.evidence_lineage import resolve_evidence_lineages
 
+    evidence = [
+        {
+            "id": "paper-original",
+            "doi": "10.1000/ABC.123",
+        },
+        {
+            "id": "paper-duplicate",
+            "doi": "https://doi.org/10.1000/abc.123",
+        },
+    ]
+
+    result = resolve_evidence_lineages(evidence)
+
+    assert result["total_items"] == 2
+    assert result["unique_lineages"] == 1
+    assert result["derivative_items"] == 1
+    assert result["independence_ratio"] == 0.5
+
+    print("✓ Test 2.4 PASSED: Equivalent DOI forms collapse into one lineage")
 # ============================================================================
 # TEST 3: Component Weight Adjustment
 # ============================================================================
@@ -363,6 +385,7 @@ def run_all_tests():
         test_reasoning_audit_single_source,
         test_reasoning_audit_tier_inversion,
         test_reasoning_audit_good_hierarchy,
+        test_evidence_lineage_collapses_equivalent_doi,
         
         # Weight Adjustment
         test_weight_adjustment_tier_1_dominant,
