@@ -178,6 +178,27 @@ def test_evidence_lineage_collapses_equivalent_doi():
     assert result["independence_ratio"] == 0.5
 
     print("✓ Test 2.4 PASSED: Equivalent DOI forms collapse into one lineage")
+
+
+def test_evidence_lineage_missing_metadata_remains_independent():
+    """Evidence without lineage metadata must never collapse accidentally."""
+    from engine.evidence_lineage import resolve_evidence_lineages
+
+    evidence = [
+        {"id": None},
+        {"id": None},
+    ]
+
+    result = resolve_evidence_lineages(evidence)
+
+    assert result["total_items"] == 2
+    assert result["unique_lineages"] == 2
+    assert result["derivative_items"] == 0
+    assert result["independence_ratio"] == 1.0
+
+    print("\u2713 Test 2.5 PASSED: Missing metadata remains independent")
+
+
 # ============================================================================
 # TEST 3: Component Weight Adjustment
 # ============================================================================
@@ -386,6 +407,7 @@ def run_all_tests():
         test_reasoning_audit_tier_inversion,
         test_reasoning_audit_good_hierarchy,
         test_evidence_lineage_collapses_equivalent_doi,
+        test_evidence_lineage_missing_metadata_remains_independent,
         
         # Weight Adjustment
         test_weight_adjustment_tier_1_dominant,

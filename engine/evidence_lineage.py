@@ -63,7 +63,7 @@ def resolve_evidence_lineages(
             lineage_key = ("doi", normalize_doi(str(doi)))
         else:
             # Missing metadata must never cause an accidental collapse.
-            lineage_key = ("item", item.get("id", index))
+            lineage_key = ("item", index)
 
         lineage_keys.append(lineage_key)
 
