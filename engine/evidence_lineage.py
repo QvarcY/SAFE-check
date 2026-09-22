@@ -63,10 +63,16 @@ def resolve_evidence_lineages(
         lineage_id = None
 
         if isinstance(derivation_signal, dict):
-            lineage_id = derivation_signal.get("lineage_id")
+            raw_lineage_id = derivation_signal.get("lineage_id")
+
+            if raw_lineage_id is not None:
+                normalized_lineage_id = str(raw_lineage_id).strip()
+
+                if normalized_lineage_id:
+                    lineage_id = normalized_lineage_id
 
         if lineage_id:
-            lineage_key = ("lineage_id", str(lineage_id).strip())
+            lineage_key = ("lineage_id", lineage_id)
         elif doi:
             lineage_key = ("doi", normalize_doi(str(doi)))
         else:
