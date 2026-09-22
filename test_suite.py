@@ -199,6 +199,31 @@ def test_evidence_lineage_missing_metadata_remains_independent():
     print("\u2713 Test 2.5 PASSED: Missing metadata remains independent")
 
 
+def test_evidence_lineage_collapses_explicit_lineage_id():
+    """Evidence sharing an explicit lineage_id should resolve to one lineage."""
+    from engine.evidence_lineage import resolve_evidence_lineages
+
+    evidence = [
+        {
+            "id": "primary-source",
+            "derivation_signal": {"lineage_id": "study_X"},
+        },
+        {
+            "id": "derived-source",
+            "derivation_signal": {"lineage_id": "study_X"},
+        },
+    ]
+
+    result = resolve_evidence_lineages(evidence)
+
+    assert result["total_items"] == 2
+    assert result["unique_lineages"] == 1
+    assert result["derivative_items"] == 1
+    assert result["independence_ratio"] == 0.5
+
+    print("Test 2.6 PASSED: Explicit lineage_id collapses into one lineage")
+
+
 # ============================================================================
 # TEST 3: Component Weight Adjustment
 # ============================================================================
@@ -408,6 +433,7 @@ def run_all_tests():
         test_reasoning_audit_good_hierarchy,
         test_evidence_lineage_collapses_equivalent_doi,
         test_evidence_lineage_missing_metadata_remains_independent,
+        test_evidence_lineage_collapses_explicit_lineage_id,
         
         # Weight Adjustment
         test_weight_adjustment_tier_1_dominant,

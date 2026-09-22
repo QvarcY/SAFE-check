@@ -58,8 +58,15 @@ def resolve_evidence_lineages(
 
     for index, item in enumerate(evidence_items):
         doi = item.get("doi")
+        derivation_signal = item.get("derivation_signal")
+        lineage_id = None
 
-        if doi:
+        if isinstance(derivation_signal, dict):
+            lineage_id = derivation_signal.get("lineage_id")
+
+        if lineage_id:
+            lineage_key = ("lineage_id", str(lineage_id).strip())
+        elif doi:
             lineage_key = ("doi", normalize_doi(str(doi)))
         else:
             # Missing metadata must never cause an accidental collapse.
