@@ -224,6 +224,39 @@ def test_evidence_lineage_collapses_explicit_lineage_id():
     print("Test 2.6 PASSED: Explicit lineage_id collapses into one lineage")
 
 
+def test_evidence_lineage_exposes_assignments():
+    """Resolver should expose auditable lineage assignments for each item."""
+    from engine.evidence_lineage import resolve_evidence_lineages
+
+    evidence = [
+        {
+            "id": "primary-source",
+            "derivation_signal": {"lineage_id": "study_X"},
+        },
+        {
+            "id": "derived-source",
+            "derivation_signal": {"lineage_id": "study_X"},
+        },
+    ]
+
+    result = resolve_evidence_lineages(evidence)
+
+    assert result["lineage_assignments"] == [
+        {
+            "item_id": "primary-source",
+            "lineage_type": "lineage_id",
+            "lineage_value": "study_X",
+        },
+        {
+            "item_id": "derived-source",
+            "lineage_type": "lineage_id",
+            "lineage_value": "study_X",
+        },
+    ]
+
+    print("Test 2.7 PASSED: Lineage assignments are exposed")
+
+
 # ============================================================================
 # TEST 3: Component Weight Adjustment
 # ============================================================================
@@ -434,6 +467,7 @@ def run_all_tests():
         test_evidence_lineage_collapses_equivalent_doi,
         test_evidence_lineage_missing_metadata_remains_independent,
         test_evidence_lineage_collapses_explicit_lineage_id,
+        test_evidence_lineage_exposes_assignments,
         
         # Weight Adjustment
         test_weight_adjustment_tier_1_dominant,

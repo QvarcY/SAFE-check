@@ -55,6 +55,7 @@ def resolve_evidence_lineages(
     No probabilistic or semantic inference is performed.
     """
     lineage_keys = []
+    lineage_assignments = []
 
     for index, item in enumerate(evidence_items):
         doi = item.get("doi")
@@ -74,6 +75,18 @@ def resolve_evidence_lineages(
 
         lineage_keys.append(lineage_key)
 
+        item_id = item.get("id")
+        if item_id is None:
+            item_id = index
+
+        lineage_assignments.append(
+            {
+                "item_id": item_id,
+                "lineage_type": lineage_key[0],
+                "lineage_value": lineage_key[1],
+            }
+        )
+
     total_items = len(evidence_items)
     unique_lineages = len(set(lineage_keys))
     derivative_items = total_items - unique_lineages
@@ -89,4 +102,5 @@ def resolve_evidence_lineages(
         "unique_lineages": unique_lineages,
         "derivative_items": derivative_items,
         "independence_ratio": independence_ratio,
+        "lineage_assignments": lineage_assignments,
     }
