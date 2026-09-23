@@ -282,6 +282,21 @@ def test_evidence_lineage_blank_lineage_id_remains_independent():
     print("Test 2.8 PASSED: Blank lineage_id remains independent")
 
 
+def test_evidence_lineage_empty_input_is_safe():
+    """Empty evidence input should return a complete zero-value result."""
+    from engine.evidence_lineage import resolve_evidence_lineages
+
+    result = resolve_evidence_lineages([])
+
+    assert result["total_items"] == 0
+    assert result["unique_lineages"] == 0
+    assert result["derivative_items"] == 0
+    assert result["independence_ratio"] == 0.0
+    assert result["lineage_assignments"] == []
+
+    print("Test 2.9 PASSED: Empty evidence input is safe")
+
+
 # ============================================================================
 # TEST 3: Component Weight Adjustment
 # ============================================================================
@@ -494,6 +509,7 @@ def run_all_tests():
         test_evidence_lineage_collapses_explicit_lineage_id,
         test_evidence_lineage_exposes_assignments,
         test_evidence_lineage_blank_lineage_id_remains_independent,
+        test_evidence_lineage_empty_input_is_safe,
         
         # Weight Adjustment
         test_weight_adjustment_tier_1_dominant,

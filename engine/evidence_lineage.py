@@ -48,9 +48,12 @@ def resolve_evidence_lineages(
     """
     Resolve deterministic evidence lineages.
 
-    Current conservative rule:
-    - Evidence items with the same normalized DOI belong to one lineage.
-    - Evidence without a DOI remains independent.
+    Resolution rules:
+    - Explicit derivation_signal.lineage_id takes precedence when present.
+    - Otherwise, evidence with the same normalized DOI shares one lineage.
+    - Missing or blank lineage metadata remains independent.
+    - Each evidence item receives an auditable lineage assignment.
+    - Empty input returns a complete zero-value result.
 
     No probabilistic or semantic inference is performed.
     """
