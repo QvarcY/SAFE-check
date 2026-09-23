@@ -327,16 +327,54 @@ evidence_2 = {"id": "news_article_citing_study"}
 
 **Right:**
 ```python
-evidence_1 = {
-    "id": "original_study",
-    "derivation_signal": {"is_primary": True, "lineage_id": "study_X"}
-}
-evidence_2 = {
-    "id": "news_article",
-    "derivation_signal": {"is_primary": False, "lineage_id": "study_X"}  # Same lineage
-}
-# Correctly identified as single lineage with 1 derivative
+from engine.evidence_lineage import resolve_evidence_lineages
+
+evidence = [
+    {
+        "id": "original_study",
+        "derivation_signal": {
+            "is_primary": True,
+            "lineage_id": "study_X",
+        },
+    },
+    {
+        "id": "news_article",
+        "derivation_signal": {
+            "is_primary": False,
+            "lineage_id": "study_X",
+        },
+    },
+]
+
+lineage_result = resolve_evidence_lineages(evidence)
+
+print(lineage_result["unique_lineages"])
+print(lineage_result["derivative_items"])
+print(lineage_result["independence_ratio"])
+print(lineage_result["lineage_assignments"])
+
 ```
+
+**Output:**
+```python
+1
+1
+0.5
+[
+    {
+        "item_id": "original_study",
+        "lineage_type": "lineage_id",
+        "lineage_value": "study_X",
+    },
+    {
+        "item_id": "news_article",
+        "lineage_type": "lineage_id",
+        "lineage_value": "study_X",
+    },
+]
+```
+
+Both evidence items are preserved for auditability, but they count as one independent evidence lineage.
 
 ### 3. Evaluate Reasoning First
 
